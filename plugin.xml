@@ -1,109 +1,82 @@
-<!--EDIT plugin.template.xml NOT plugin.xml. plugin.xml WILL BE OVERWRITTEN BY GULP -->
-
 <?xml version="1.0" encoding="UTF-8"?>
-<!--The MIT License (MIT)
-
-Copyright (c) 2015 Branch Metrics, Inc.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
--->
+<!-- Copyright (c) 2014 PayPal. All rights reserved. -->
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        id="io.branch.sdk"
-        version="2.1.10">
-
-    <name>branch-cordova-sdk</name>
-    <description>Branch SDK Plugin</description>
-    <license>Apache 2.0</license>
-    <keywords>cordova,branch</keywords>
-    <repo>https://github.com/BranchMetrics/Cordova-Ionic-PhoneGap-Deferred-Deep-Linking-SDK.git</repo>
-    <issue>https://github.com/BranchMetrics/Cordova-Ionic-PhoneGap-Deferred-Deep-Linking-SDK/issues</issue>
-    
-    <dependency
-      id="es6-promise-plugin"
-      url="https://github.com/vstirbu/PromisesPlugin.git">
-    </dependency>
-
-    <js-module src="www/branch.js" name="Branch">
-        <clobbers target="Branch" />
-    </js-module>
-
-    <preference name="BRANCH_KEY" />
-    <preference name="URI_SCHEME" />
-
-    <!-- Hooks -->
-    <hook src="hooks/afterPrepareHook.js" type="after_prepare" />
-    <hook src="hooks/beforePluginInstallHook.js" type="before_plugin_install" />
-
+    xmlns:rim="http://www.blackberry.com/ns/widgets"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    id="com.paypal.cordova.mobilesdk"
+    version="3.2.2">
+    <name>PayPalMobile</name>
+    <description>This plugin allows to add to add PayPal Payments to your application using PayPal Mobile SDK Native library</description>
+    <keywords>paypal, sdk, payments</keywords>
+    <license>BSD License, see LICENSE.md for details</license>
     <engines>
-        <engine name="cordova" version=">=3.5.0" />
+            <engine name="cordova" version="&gt;=3.0.0" />
     </engines>
 
-    <!-- android -->
-    <platform name="android">
-        <config-file target="config.xml" parent="/*">
-            <feature name="BranchSDK">
-                <param name="android-package" value="io.branch.BranchSDK" />
-                <param name="onload" value="true" />
-            </feature>
-        </config-file>
-        <config-file target="AndroidManifest.xml" parent="/manifest/application">
-            <meta-data android:name="io.branch.sdk.BranchKey" android:value="$BRANCH_KEY" />
-        </config-file>
-        <config-file target="AndroidManifest.xml" parent="/manifest/application/activity">
-            <intent-filter>
-                <data android:scheme="$URI_SCHEME" />
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-            </intent-filter>
-        </config-file>
-        <source-file src="src/android/io/branch/BranchSDK.java" target-dir="src/io/branch" />
-        <framework src="io.branch.sdk.android:library:1+" />
-    </platform>
+    <js-module src="www/cdv-plugin-paypal-mobile-sdk.js" name="PayPalMobile">
+        <clobbers target="PayPalMobile" />
+    </js-module>
+
+    <!-- adding card.io cordova plugin dependency -->
+    <dependency id="card.io.cordova.mobilesdk" version="2.0.1" />
+
+    <asset src="www/paypal-mobile-js-helper.js" target="js/paypal-mobile-js-helper.js" />
 
     <!-- ios -->
     <platform name="ios">
         <config-file target="config.xml" parent="/*">
-            <feature name="BranchSDK">
-                <param name="ios-package" value="BranchSDK" />
+            <feature name="PayPalMobile">
+                <param name="ios-package" value="PayPalMobileCordovaPlugin" onload="true" />
             </feature>
         </config-file>
-        <config-file target="*-Info.plist" parent="branch_key">
-                <string>$BRANCH_KEY</string>
-        </config-file>
-        <config-file target="*-Info.plist" parent="CFBundleURLTypes">
-            <array>
-                <dict>
-                    <key>CFBundleURLName</key>
-                    <string>io.branch.sdk</string>
-                    <key>CFBundleURLSchemes</key>
-                    <array>
-                        <string>$URI_SCHEME</string>
-                    </array>
-                </dict>
-            </array>
-        </config-file>
-        <header-file src="src/ios/BranchNPM.h" />
-        <header-file src="src/ios/BranchSDK.h" />
-        <source-file src="src/ios/BranchSDK.m" />
-        <source-file src="src/ios/AppDelegate+BranchSdk.m" />
-        <framework custom="true" src="src/ios/dependencies/Branch.framework" />
+
+        <header-file src="src/ios/PayPalMobileCordovaPlugin.h" />
+        <source-file src="src/ios/PayPalMobileCordovaPlugin.m" />
+
+        <header-file src="src/ios/PayPalMobile/PayPalConfiguration.h" />
+        <header-file src="src/ios/PayPalMobile/PayPalFuturePaymentViewController.h" />
+        <header-file src="src/ios/PayPalMobile/PayPalMobile.h" />
+        <header-file src="src/ios/PayPalMobile/PayPalOAuthScopes.h" />
+        <header-file src="src/ios/PayPalMobile/PayPalPayment.h" />
+        <header-file src="src/ios/PayPalMobile/PayPalPaymentViewController.h" />
+        <header-file src="src/ios/PayPalMobile/PayPalProfileSharingViewController.h" />
+
+        <source-file src="src/ios/PayPalMobile/libPayPalMobile.a" framework="true" />
+
+        <framework src="Accelerate.framework" />
+        <framework src="AudioToolbox.framework" />
+        <framework src="AVFoundation.framework" />
+        <framework src="CFNetwork.framework" />
+        <framework src="CoreGraphics.framework" />
+        <framework src="CoreLocation.framework" weak="true" />
+        <framework src="CoreMedia.framework" weak="true" />
+        <framework src="CoreVideo.framework"/>
+        <framework src="MessageUI.framework" />
+        <framework src="OpenGLES.framework" />
+        <framework src="MobileCoreServices.framework" />
+        <framework src="Security.framework" />
+        <framework src="SafariServices.framework"/>
+        <framework src="SystemConfiguration.framework" />
+        <framework src="QuartzCore.framework"/>
+        <framework src="UIKit.framework"/>
+
+
+        <framework src="libc++.dylib" />
+        <framework src="libPayPalMobile.a" />
     </platform>
+
+    <!-- android -->
+    <platform name="android">
+
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="PayPalMobile">
+                <param name="android-package" value="com.paypal.cordova.sdk.PayPalMobileCordovaPlugin" />
+            </feature>
+        </config-file>
+
+        <source-file src="src/android/PayPalMobileCordovaPlugin.java" target-dir="src/com/paypal/cordova/sdk" />
+	      <framework src="src/android/build.gradle" custom="true" type="gradleReference" />
+
+    </platform>
+
 </plugin>
